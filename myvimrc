@@ -1,0 +1,225 @@
+set nocompatible
+syntax on
+filetype plugin indent on
+set ic
+set hlsearch
+set encoding=utf-8
+set fileencodings=utf-8,ucs-bom,GB2312,big5
+set cursorline
+set autoindent
+set smartindent
+set scrolloff=4
+set showmatch
+set nu
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+let python_highlight_all=1
+au Filetype python set tabstop=4
+au Filetype python set softtabstop=4
+au Filetype python set shiftwidth=4
+au Filetype python set textwidth=79
+au Filetype python set expandtab
+au Filetype python set autoindent
+au Filetype python set fileformat=unix
+autocmd Filetype python set foldmethod=indent
+autocmd Filetype python set foldlevel=99
+for i in range(char2nr('a'), char2nr('z'))
+    let i = nr2char(i)
+    exec "set <M-".i.">=\<Esc>".i
+    exec "inoremap \<Esc>".i." <M-".i.">"
+endfor
+
+for i in range(char2nr('0'), char2nr('9'))
+    let i = nr2char(i)
+    exec "set <M-".i.">=\<Esc>".i
+    exec "inoremap \<Esc>".i." <M-".i.">"
+endfor
+let mapleader=" "
+nnoremap <silent> <leader>wv :vs<CR>
+nnoremap <silent> <leader>ws :split<CR>
+nnoremap <silent> <leader>wd :q<CR>
+nnoremap <silent> <leader>wD :q!<CR>
+nnoremap <silent> <leader>fs :w<CR>
+nnoremap <silent> <leader>wl <C-w>l
+nnoremap <silent> <leader>wh <C-w>h
+nnoremap <silent> <leader>wj <C-w>j
+nnoremap <silent> <leader>wk <C-w>k
+imap <silent> fd <Esc>
+
+map <F5> :call CompileRunGcc()<CR>
+func! CompileRunGcc()
+        exec "w"
+        if &filetype == 'c'
+                exec "!g++ % -o %<"
+                exec "!time ./%<"
+        elseif &filetype == 'cpp'
+                exec "!g++ % -o %<"
+                exec "!time ./%<"
+        elseif &filetype == 'java'
+                exec "!javac %"
+                exec "!time java %<"
+        elseif &filetype == 'sh'
+                :!time bash %
+        elseif &filetype == 'python'
+                exec "!clear"
+                exec "!time python3 %"
+        elseif &filetype == 'html'
+                exec "!firefox % &"
+        elseif &filetype == 'go'
+                " exec "!go build %<"
+                exec "!time go run %"
+        elseif &filetype == 'mkd'
+                exec "!~/.vim/markdown.pl % > %.html &"
+                exec "!firefox %.html &"
+        endif
+endfunc
+
+call plug#begin('~/.vim/plugged')
+
+" Add all your plugins here (note older versions of Vundle used Bundle instead of Plugin)
+
+Plug 'Chiel92/vim-autoformat'
+nnoremap <F6> :Autoformat<CR>
+let g:autoformat_autoindent = 0
+let g:autoformat_retab = 0
+let g:autoformat_remove_trailing_spaces = 0
+
+Plug 'https://github.com/scrooloose/nerdtree'
+" nnoremap <F3> :NERDTreeToggle<CR>
+nnoremap <silent> <leader>ft :NERDTreeToggle<CR>
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+Plug 'kien/rainbow_parentheses.vim'
+let g:rbpt_colorpairs = [
+                        \ ['brown',       'RoyalBlue3'],
+                        \ ['Darkblue',    'SeaGreen3'],
+                        \ ['darkgray',    'DarkOrchid3'],
+                        \ ['darkgreen',   'firebrick3'],
+                        \ ['darkcyan',    'RoyalBlue3'],
+                        \ ['darkred',     'SeaGreen3'],
+                        \ ['darkmagenta', 'DarkOrchid3'],
+                        \ ['brown',       'firebrick3'],
+                        \ ['gray',        'RoyalBlue3'],
+                        \ ['darkmagenta', 'DarkOrchid3'],
+                        \ ['Darkblue',    'firebrick3'],
+                        \ ['darkgreen',   'RoyalBlue3'],
+                        \ ['darkcyan',    'SeaGreen3'],
+                        \ ['darkred',     'DarkOrchid3'],
+                        \ ['red',         'firebrick3'],
+                        \ ]
+let g:rbpt_max = 16
+let g:rbpt_loadcmd_toggle = 0
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+
+Plug 'https://github.com/bling/vim-airline'
+Plug 'Shougo/denite.nvim'
+Plug 'honza/vim-snippets'
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+" if hidden not set, TextEdit might fail.
+set hidden
+
+" Better display for messages
+set cmdheight=2
+
+" Smaller updatetime for CursorHold & CursorHoldI
+set updatetime=300
+
+" don't give |ins-completion-menu| messages.
+set shortmess+=c
+
+" always show signcolumns
+set signcolumn=yes
+
+inoremap <silent><expr> <C-j>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><C-k> pumvisible() ? "\<C-p>" : "\<C-h>"
+imap <C-l> <Plug>(coc-snippets-expand)
+let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
+let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
+autocmd CursorHold * silent call CocActionAsync('highlight')
+" Shortcuts for denite interface
+" Show extension list
+nnoremap <silent> <space>e  :<C-u>Denite coc-extension<cr>
+" Show symbols of current buffer
+nnoremap <silent> <space>o  :<C-u>Denite coc-symbols<cr>
+" Search symbols of current workspace
+nnoremap <silent> <space>t  :<C-u>Denite coc-workspace<cr>
+" Show diagnostics of current workspace
+nnoremap <silent> <space>a  :<C-u>Denite coc-diagnostic<cr>
+" Show available commands
+nnoremap <silent> <space>c  :<C-u>Denite coc-command<cr>
+" Show available services
+nnoremap <silent> <space>S  :<C-u>Denite coc-service<cr>
+" Show links of current buffer
+nnoremap <silent> <space>L  :<C-u>Denite coc-link<cr>
+
+" " lightful code companaion
+" " SnipMate 携带的四个插件
+" Plugin 'MarcWeber/vim-addon-mw-utils'
+" Plugin 'tomtom/tlib_vim'
+" Plugin 'garbas/vim-snipmate'
+" Plugin 'honza/vim-snippets'  
+
+" EasyComplete 插件和 Dictionary 词表
+" Plugin 'jayli/vim-easycomplete'
+" Plugin 'jayli/vim-dictionary'
+" imap <Tab>   <Plug>EasyCompTabTrigger
+" let g:pmenu_scheme = 'dark'
+
+Plug 'fatih/vim-go'
+Plug 'mhinz/vim-startify'
+" ctrlp config
+Plug 'ctrlpvim/ctrlp.vim'
+let g:ctrlp_by_filname = 1
+let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+
+Plug 'DavidEGx/ctrlp-smarttabs'
+let g:ctrlp_extensions = ['smarttabs']
+Plug 'majutsushi/tagbar'
+nmap <F8> :TagbarToggle<CR>
+Plug 'pelodelfuego/vim-swoop'
+Plug 'easymotion/vim-easymotion'
+let g:EasyMotion_smartcase = 1
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+nmap s <Plug>(easymotion-overwin-f2)
+nmap <leader>j <Plug>(easymotion-j)
+nmap <leader>k <Plug>(easymotion-k)
+
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'luochen1990/rainbow'
+let g:rainbow_active = 1
+Plug 'tpope/vim-commentary'
+Plug 'flazz/vim-colorschemes'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+let g:fzf_history_dir = '~/.local/share/fzf-history'
+" [Tags] Command to generate tags file
+let g:fzf_tags_command = 'ctags -R'
+nnoremap <silent> <leader>ff :Files<CR>
+nnoremap <silent> <leader>bb :Buffers<CR>
+nnoremap <silent> <leader>ww :Windows<CR>
+nnoremap <silent> <M-c> :History<CR>
+nnoremap <silent> <M-s> :History/<CR>
+nnoremap <silent> <leader><leader> :Commands<CR>
+
+Plug 'tpope/vim-fugitive'
+nnoremap <silent> <leader>gd :Gdiff<CR>
+nnoremap <silent> <leader>gs :Gstatus<CR>
+nnoremap <silent> <leader>gb :Gblame<CR>
+Plug 'jreybert/vimagit' " not accomplished, still useful
+Plug 'airblade/vim-gitgutter'
+
+" devicons must be last one
+Plug 'ryanoasis/vim-devicons'
+" All of your Plugins must be added before the following line
+call plug#end()
+
+colorscheme space-vim-dark
