@@ -37,16 +37,8 @@ for i in range(char2nr('0'), char2nr('9'))
     exec "inoremap \<Esc>".i." <M-".i.">"
 endfor
 let mapleader=" "
-nnoremap <silent> <leader>wv :vs<CR>
-nnoremap <silent> <leader>ws :split<CR>
-nnoremap <silent> <leader>wd :q<CR>
-nnoremap <silent> <leader>wD :q!<CR>
-nnoremap <silent> <leader>fs :w<CR>
-nnoremap <silent> <leader>wl <C-w>l
-nnoremap <silent> <leader>wh <C-w>h
-nnoremap <silent> <leader>wj <C-w>j
-nnoremap <silent> <leader>wk <C-w>k
 imap <silent> fd <Esc>
+imap <silent> <C-[> <Esc>
 
 map <F5> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
@@ -81,17 +73,58 @@ call plug#begin('~/.vim/plugged')
 " Add all your plugins here (note older versions of Vundle used Bundle instead of Plugin)
 
 Plug 'Chiel92/vim-autoformat'
+Plug 'https://github.com/scrooloose/nerdtree'
+Plug 'kien/rainbow_parentheses.vim'
+Plug 'https://github.com/bling/vim-airline'
+Plug 'Shougo/denite.nvim'
+Plug 'honza/vim-snippets'
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+
+" " lightful code companaion
+" " SnipMate 携带的四个插件
+" Plugin 'MarcWeber/vim-addon-mw-utils'
+" Plugin 'tomtom/tlib_vim'
+" Plugin 'garbas/vim-snipmate'
+" Plugin 'honza/vim-snippets'  
+
+" EasyComplete 插件和 Dictionary 词表
+" Plugin 'jayli/vim-easycomplete'
+" Plugin 'jayli/vim-dictionary'
+" imap <Tab>   <Plug>EasyCompTabTrigger
+" let g:pmenu_scheme = 'dark'
+
+Plug 'fatih/vim-go'
+Plug 'mhinz/vim-startify'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'DavidEGx/ctrlp-smarttabs'
+Plug 'majutsushi/tagbar'
+Plug 'pelodelfuego/vim-swoop'
+Plug 'easymotion/vim-easymotion'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'luochen1990/rainbow'
+Plug 'tpope/vim-commentary'
+Plug 'flazz/vim-colorschemes'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'jreybert/vimagit' " not accomplished, still useful
+Plug 'airblade/vim-gitgutter'
+Plug 'liuchengxu/vim-which-key'
+Plug 'jiangmiao/auto-pairs'
+Plug 'ryanoasis/vim-devicons' " devicons must be last one
+" All of your Plugins must be added before the following line
+call plug#end()
+
+
+" Start of vim-autoformat config
 nnoremap <F6> :Autoformat<CR>
 let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
 let g:autoformat_remove_trailing_spaces = 0
+" End of vim-autoformat config
 
-Plug 'https://github.com/scrooloose/nerdtree'
-" nnoremap <F3> :NERDTreeToggle<CR>
-nnoremap <silent> <leader>ft :NERDTreeToggle<CR>
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
-Plug 'kien/rainbow_parentheses.vim'
+" Start of rainbow_parentheses config
 let g:rbpt_colorpairs = [
                         \ ['brown',       'RoyalBlue3'],
                         \ ['Darkblue',    'SeaGreen3'],
@@ -115,11 +148,15 @@ au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
+" End of rainbow_parentheses config
 
-Plug 'https://github.com/bling/vim-airline'
-Plug 'Shougo/denite.nvim'
-Plug 'honza/vim-snippets'
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+
+" Start of NERDTree config
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" End of NERDTree config
+
+
+" Start of coc.nvim config
 " if hidden not set, TextEdit might fail.
 set hidden
 
@@ -143,7 +180,6 @@ inoremap <expr><C-k> pumvisible() ? "\<C-p>" : "\<C-h>"
 imap <C-l> <Plug>(coc-snippets-expand)
 let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
 let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
-autocmd CursorHold * silent call CocActionAsync('highlight')
 " Shortcuts for denite interface
 " Show extension list
 nnoremap <silent> <space>e  :<C-u>Denite coc-extension<cr>
@@ -159,67 +195,99 @@ nnoremap <silent> <space>c  :<C-u>Denite coc-command<cr>
 nnoremap <silent> <space>S  :<C-u>Denite coc-service<cr>
 " Show links of current buffer
 nnoremap <silent> <space>L  :<C-u>Denite coc-link<cr>
+" End of coc.nvim config
 
-" " lightful code companaion
-" " SnipMate 携带的四个插件
-" Plugin 'MarcWeber/vim-addon-mw-utils'
-" Plugin 'tomtom/tlib_vim'
-" Plugin 'garbas/vim-snipmate'
-" Plugin 'honza/vim-snippets'  
 
-" EasyComplete 插件和 Dictionary 词表
-" Plugin 'jayli/vim-easycomplete'
-" Plugin 'jayli/vim-dictionary'
-" imap <Tab>   <Plug>EasyCompTabTrigger
-" let g:pmenu_scheme = 'dark'
-
-Plug 'fatih/vim-go'
-Plug 'mhinz/vim-startify'
-" ctrlp config
-Plug 'ctrlpvim/ctrlp.vim'
+" Start of ctrlp config
 let g:ctrlp_by_filname = 1
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+" End of ctrlp config
 
-Plug 'DavidEGx/ctrlp-smarttabs'
+" Start of smarttabs config
 let g:ctrlp_extensions = ['smarttabs']
-Plug 'majutsushi/tagbar'
+" End of smarttabs config
+
+" Start of tagbar config
 nmap <F8> :TagbarToggle<CR>
-Plug 'pelodelfuego/vim-swoop'
-Plug 'easymotion/vim-easymotion'
+" End of tagbar config
+
+" Start of easymotion config
 let g:EasyMotion_smartcase = 1
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 nmap s <Plug>(easymotion-overwin-f2)
 nmap <leader>j <Plug>(easymotion-j)
 nmap <leader>k <Plug>(easymotion-k)
+" End of easymotion config
 
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
-Plug 'luochen1990/rainbow'
+
+" Start of luochen1990/rainbow config
 let g:rainbow_active = 1
-Plug 'tpope/vim-commentary'
-Plug 'flazz/vim-colorschemes'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
+" End of luochen1990/rainbow config
+
+" Start of fzf.vim config
 let g:fzf_history_dir = '~/.local/share/fzf-history'
 " [Tags] Command to generate tags file
 let g:fzf_tags_command = 'ctags -R'
-nnoremap <silent> <leader>ff :Files<CR>
-nnoremap <silent> <leader>bb :Buffers<CR>
-nnoremap <silent> <leader>ww :Windows<CR>
+" nnoremap <silent> <leader>bb :Buffers<CR>
+" nnoremap <silent> <leader>ww :Windows<CR>
 nnoremap <silent> <M-c> :History<CR>
 nnoremap <silent> <M-s> :History/<CR>
 nnoremap <silent> <leader><leader> :Commands<CR>
+" End of fzf.vim config
 
-Plug 'tpope/vim-fugitive'
+
+" Start of vim-fugitive config
 nnoremap <silent> <leader>gd :Gdiff<CR>
 nnoremap <silent> <leader>gs :Gstatus<CR>
 nnoremap <silent> <leader>gb :Gblame<CR>
-Plug 'jreybert/vimagit' " not accomplished, still useful
-Plug 'airblade/vim-gitgutter'
+" End of vim-fugitive config
 
-" devicons must be last one
-Plug 'ryanoasis/vim-devicons'
-" All of your Plugins must be added before the following line
-call plug#end()
+
+" Start of vim-which-key config
+" By default timeoutlen is 1000 ms
+set timeoutlen=500
+let g:which_key_map = {}
+let g:which_key_map.f = {'name': '+file'}
+nnoremap <leader>fs :update<CR>
+let g:which_key_map.f.s = ['update', 'save-file']
+nnoremap <silent> <leader>ff :Files<CR>
+let g:which_key_map.f.f = ['Files', 'fzf-files']
+nnoremap <silent> <leader>ft :NERDTreeToggle<CR>
+let g:which_key_map.f.t = ['NERDTreeToggle', 'NERDTree']
+let g:which_key_map['w'] = {
+      \ 'name' : '+windows' ,
+      \ 'w' : ['<C-W>w'     , 'other-window']          ,
+      \ 'd' : ['<C-W>c'     , 'delete-window']         ,
+      \ '-' : ['<C-W>s'     , 'split-window-below']    ,
+      \ '|' : ['<C-W>v'     , 'split-window-right']    ,
+      \ '2' : ['<C-W>v'     , 'layout-double-columns'] ,
+      \ 'h' : ['<C-W>h'     , 'window-left']           ,
+      \ 'j' : ['<C-W>j'     , 'window-below']          ,
+      \ 'l' : ['<C-W>l'     , 'window-right']          ,
+      \ 'k' : ['<C-W>k'     , 'window-up']             ,
+      \ 'H' : ['<C-W>5<'    , 'expand-window-left']    ,
+      \ 'J' : ['resize +5'  , 'expand-window-below']   ,
+      \ 'L' : ['<C-W>5>'    , 'expand-window-right']   ,
+      \ 'K' : ['resize -5'  , 'expand-window-up']      ,
+      \ '=' : ['<C-W>='     , 'balance-window']        ,
+      \ 's' : ['<C-W>s'     , 'split-window-below']    ,
+      \ 'v' : ['<C-W>v'     , 'split-window-below']    ,
+      \ '?' : ['Windows'    , 'fzf-window']            ,
+      \ }
+let g:which_key_map.b = {
+      \ 'name' : '+buffer' ,
+      \ '1' : ['b1'        , 'buffer 1']        ,
+      \ '2' : ['b2'        , 'buffer 2']        ,
+      \ 'd' : ['bd'        , 'delete-buffer']   ,
+      \ 'f' : ['bfirst'    , 'first-buffer']    ,
+      \ 'h' : ['Startify'  , 'home-buffer']     ,
+      \ 'l' : ['blast'     , 'last-buffer']     ,
+      \ 'n' : ['bnext'     , 'next-buffer']     ,
+      \ 'p' : ['bprevious' , 'previous-buffer'] ,
+      \ 'b' : ['Buffers'   , 'fzf-buffer']      ,
+      \ }
+call which_key#register('<Space>', 'g:which_key_map')
+nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+" End of vim-which-key config
 
 colorscheme space-vim-dark
